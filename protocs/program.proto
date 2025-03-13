@@ -1,0 +1,125 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+package api.v1;
+option go_package = "gitlab.com/nbdgocean6/nobita-promo-program/protocs/api/v1/api/v1";
+
+message AddProgramReq {
+  string id = 1;
+  string channel_id = 2;
+  string topic_id = 3;
+  string description = 4;
+  string memo_url = 5;
+  int64 start_at = 6;
+  int64 end_at = 7;
+  int64 allocated_amount = 8;
+  int64 available_allocated_amount = 9;
+  string eligibility_check = 10;
+  int64 status = 11;
+  int64 created_at = 12;
+  string created_by = 13;
+  int64 updated_at = 14;
+  string updated_by = 15;
+  string source_of_fund = 16;
+  string discount_calculation = 17;
+  int64 allocated_quota = 18;
+  int64 available_allocated_quota = 19;
+  int64 discount_percent = 20;
+  int64 discount_amount = 21;
+  string merchant_csv_url = 22;
+  string customer_csv_url = 23;
+  int64 refresh_program_quota_daily = 24;
+}
+
+message ProgramRes {
+  bool success = 1;
+  string messages = 2;
+}
+
+message EditProgramReq {
+  string id = 1;
+  string channel_id = 2;
+  string topic_id = 3;
+  string description = 4;
+  string memo_url = 5;
+  int64 start_at = 6;
+  int64 end_at = 7;
+  int64 allocated_amount = 8;
+  int64 available_allocated_amount = 9;
+  string eligibility_check = 10;
+  int64 status = 11;
+  int64 updated_at = 12;
+  string updated_by = 13;
+  string source_of_fund = 14;
+  string discount_calculation = 15;
+  int64 allocated_quota = 16;
+  int64 available_allocated_quota = 17;
+  int64 discount_percent = 18;
+  int64 discount_amount = 19;
+  string merchant_csv_url = 20;
+  string customer_csv_url = 21;
+  int64 refresh_program_quota_daily = 22;
+}
+
+message DeleteProgramReq {
+  string id = 1;
+}
+
+message GetProgramReq {
+  string topic_id = 1;
+}
+
+message GetProgramDetailReq {
+  string id = 1;
+}
+
+message Program {
+  string id = 1;
+  string channel_id = 2;
+  string topic_id = 3;
+  string description = 4;
+  string memo_url = 5;
+  int64 start_at = 6;
+  int64 end_at = 7;
+  int64 allocated_amount = 8;
+  int64 available_allocated_amount = 9;
+  string eligibility_check = 10;
+  int64 status = 11;
+  int64 created_at = 12;
+  string created_by = 13;
+  int64 updated_at = 14;
+  string updated_by = 15;
+  string source_of_fund = 16;
+  string discount_calculation = 17;
+  int64 allocated_quota = 18;
+  int64 available_allocated_quota = 19;
+  int64 discount_percent = 20;
+  int64 discount_amount = 21;
+  string merchant_csv_url = 22;
+  string customer_csv_url = 23;
+  string topic_title = 24;
+  int64 refresh_program_quota_daily = 25;
+}
+
+message Programs {
+  repeated Program programs = 1;
+}
+
+message ProgramStatusUpdateRes {
+  string status = 1;
+  string message = 2;
+}
+
+message ProgramStatus {
+  string id = 1;
+  int32 status = 2;
+}
+
+service ProgramService {
+  rpc AddProgram(AddProgramReq) returns (ProgramRes);
+  rpc EditProgram(EditProgramReq) returns (ProgramRes);
+  rpc DeleteProgram(DeleteProgramReq) returns (ProgramRes);
+  rpc GetProgramByTopicID(GetProgramReq) returns (Programs);
+  rpc GetProgramDetail(GetProgramDetailReq) returns (Program);
+  rpc ProgramStatusUpdate(ProgramStatusUpdateRes) returns (ProgramStatusUpdateRes);
+  rpc ProgramChangeStatus(ProgramStatus) returns (google.protobuf.Empty);
+}

@@ -1,0 +1,176 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "program.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "ProgramService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {},
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "typeUrl": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1Program": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "channelId": {
+          "type": "string"
+        },
+        "topicId": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "memoUrl": {
+          "type": "string"
+        },
+        "startAt": {
+          "type": "string",
+          "format": "int64"
+        },
+        "endAt": {
+          "type": "string",
+          "format": "int64"
+        },
+        "allocatedAmount": {
+          "type": "string",
+          "format": "int64"
+        },
+        "availableAllocatedAmount": {
+          "type": "string",
+          "format": "int64"
+        },
+        "eligibilityCheck": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "format": "int64"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "int64"
+        },
+        "createdBy": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "int64"
+        },
+        "updatedBy": {
+          "type": "string"
+        },
+        "sourceOfFund": {
+          "type": "string"
+        },
+        "discountCalculation": {
+          "type": "string"
+        },
+        "allocatedQuota": {
+          "type": "string",
+          "format": "int64"
+        },
+        "availableAllocatedQuota": {
+          "type": "string",
+          "format": "int64"
+        },
+        "discountPercent": {
+          "type": "string",
+          "format": "int64"
+        },
+        "discountAmount": {
+          "type": "string",
+          "format": "int64"
+        },
+        "merchantCsvUrl": {
+          "type": "string"
+        },
+        "customerCsvUrl": {
+          "type": "string"
+        },
+        "topicTitle": {
+          "type": "string"
+        },
+        "refreshProgramQuotaDaily": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "v1ProgramRes": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "messages": {
+          "type": "string"
+        }
+      }
+    },
+    "v1ProgramStatusUpdateRes": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "v1Programs": {
+      "type": "object",
+      "properties": {
+        "programs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Program"
+          }
+        }
+      }
+    }
+  }
+}

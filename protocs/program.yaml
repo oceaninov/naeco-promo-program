@@ -1,0 +1,22 @@
+type: google.api.Service
+config_version: 3
+http:
+  rules:
+    - selector: api.v1.ProgramService.AddProgram
+      post: /v1/program
+      body: "*"
+    - selector: api.v1.ProgramService.EditProgram
+      put: /v1/program/{id}
+      body: "*"
+    - selector: api.v1.ProgramService.DeleteProgram
+      delete: /v1/program/{id}
+    - selector: api.v1.ProgramService.GetProgramByTopicID
+      get: /v1/program/{topic_id}
+    - selector: api.v1.ProgramService.GetProgramDetail
+      get: /v1/program-detail/{id}
+    - selector: api.v1.ProgramService.ProgramStatusUpdate
+      post: /v1/program/status-update
+      body: "*"
+    - selector: api.v1.ProgramService.ProgramChangeStatus
+      put: /v1/program/change-status/{id}/{status}
+      body: "*"
