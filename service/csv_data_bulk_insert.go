@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 	"github.com/go-kit/kit/log/level"
-	"gitlab.com/nbdgocean6/nobita-promo-program/gvars"
-	pb "gitlab.com/nbdgocean6/nobita-promo-program/protocs/api/v1"
+	"github.com/oceaninov/naeco-promo-program/gvars"
+	pb "github.com/oceaninov/naeco-promo-program/protocs/api/v1"
 	pbwhitelist "github.com/oceaninov/naeco-promo-whitelist/protocs/api/v1"
 	"github.com/oceaninov/naeco-promo-util/er"
 	"github.com/oceaninov/naeco-promo-util/jwt"

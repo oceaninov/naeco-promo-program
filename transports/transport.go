@@ -4,8 +4,8 @@ import (
 	"context"
 	kitoc "github.com/go-kit/kit/tracing/opencensus"
 	grpctransport "github.com/go-kit/kit/transport/grpc"
-	ep "gitlab.com/nbdgocean6/nobita-promo-program/endpoints"
-	pb "gitlab.com/nbdgocean6/nobita-promo-program/protocs/api/v1"
+	ep "github.com/oceaninov/naeco-promo-program/endpoints"
+	pb "github.com/oceaninov/naeco-promo-program/protocs/api/v1"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 

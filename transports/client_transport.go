@@ -3,9 +3,9 @@ package transports
 import (
 	"github.com/go-kit/kit/endpoint"
 	grpctransport "github.com/go-kit/kit/transport/grpc"
-	ep "gitlab.com/nbdgocean6/nobita-promo-program/endpoints"
-	pb "gitlab.com/nbdgocean6/nobita-promo-program/protocs/api/v1"
-	_interface "gitlab.com/nbdgocean6/nobita-promo-program/service/interface"
+	ep "github.com/oceaninov/naeco-promo-program/endpoints"
+	pb "github.com/oceaninov/naeco-promo-program/protocs/api/v1"
+	_interface "github.com/oceaninov/naeco-promo-program/service/interface"
 	"google.golang.org/grpc"
 )
 

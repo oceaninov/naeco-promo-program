@@ -3,8 +3,8 @@ package endpoints
 import (
 	"context"
 	"github.com/go-kit/kit/endpoint"
-	pb "gitlab.com/nbdgocean6/nobita-promo-program/protocs/api/v1"
-	_interface "gitlab.com/nbdgocean6/nobita-promo-program/service/interface"
+	pb "github.com/oceaninov/naeco-promo-program/protocs/api/v1"
+	_interface "github.com/oceaninov/naeco-promo-program/service/interface"
 )
 
 func makeGetProgramBlacklistsEndpoint(usecase _interface.Service) endpoint.Endpoint {

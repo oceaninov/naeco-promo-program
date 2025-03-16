@@ -3,8 +3,8 @@ package sql
 import (
 	"context"
 	"database/sql"
-	"gitlab.com/nbdgocean6/nobita-promo-program/models"
-	pb "gitlab.com/nbdgocean6/nobita-promo-program/protocs/api/v1"
+	"github.com/oceaninov/naeco-promo-program/models"
+	pb "github.com/oceaninov/naeco-promo-program/protocs/api/v1"
 )
 
 func (r *readWrite) ReadProgramByTopicID(ctx context.Context, id string) (*pb.Programs, error) {

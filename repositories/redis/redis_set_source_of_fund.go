@@ -3,7 +3,7 @@ package redis
 import (
 	"context"
 	"fmt"
-	"gitlab.com/nbdgocean6/nobita-promo-program/constants"
+	"github.com/oceaninov/naeco-promo-program/constants"
 )
 
 func (c *cache) RedisSetSourceOfFundBalance(ctx context.Context, accountNumber string, balance int64) error {

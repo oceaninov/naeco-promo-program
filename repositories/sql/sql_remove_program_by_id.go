@@ -3,7 +3,7 @@ package sql
 import (
 	"context"
 
-	pb "gitlab.com/nbdgocean6/nobita-promo-program/protocs/api/v1"
+	pb "github.com/oceaninov/naeco-promo-program/protocs/api/v1"
 	"github.com/oceaninov/naeco-promo-util/dbtrx"
 )
 

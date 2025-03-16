@@ -1,8 +1,8 @@
 package service
 
 import (
-	_repointerface "gitlab.com/nbdgocean6/nobita-promo-program/repositories"
-	_interface "gitlab.com/nbdgocean6/nobita-promo-program/service/interface"
+	_repointerface "github.com/oceaninov/naeco-promo-program/repositories"
+	_interface "github.com/oceaninov/naeco-promo-program/service/interface"
 	"github.com/oceaninov/naeco-promo-util/vlt"
 	"go.opencensus.io/trace"
 )

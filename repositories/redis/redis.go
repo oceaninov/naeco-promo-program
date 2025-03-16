@@ -2,7 +2,7 @@ package redis
 
 import (
 	"github.com/go-redis/redis/v8"
-	_interface "gitlab.com/nbdgocean6/nobita-promo-program/repositories/interface"
+	_interface "github.com/oceaninov/naeco-promo-program/repositories/interface"
 )
 
 type cache struct {

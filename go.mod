@@ -1,4 +1,4 @@
-module gitlab.com/nbdgocean6/nobita-promo-program
+module github.com/oceaninov/naeco-promo-program
 
 go 1.23.3
 

@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"gitlab.com/nbdgocean6/nobita-promo-program/gvars"
+	"github.com/oceaninov/naeco-promo-program/gvars"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/metadata"
 	"strings"

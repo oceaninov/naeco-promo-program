@@ -5,12 +5,12 @@ import (
 	logger "github.com/go-kit/kit/log"
 	authsvc "github.com/oceaninov/naeco-promo-auth/service/interface"
 	"github.com/oceaninov/naeco-promo-util/vlt"
-	"gitlab.com/nbdgocean6/nobita-promo-program/constants"
-	"gitlab.com/nbdgocean6/nobita-promo-program/middleware"
+	"github.com/oceaninov/naeco-promo-program/constants"
+	"github.com/oceaninov/naeco-promo-program/middleware"
 
 	kitoc "github.com/go-kit/kit/tracing/opencensus"
 	authMiddleware "github.com/oceaninov/naeco-promo-auth/middleware"
-	_interface "gitlab.com/nbdgocean6/nobita-promo-program/service/interface"
+	_interface "github.com/oceaninov/naeco-promo-program/service/interface"
 )
 
 type ProgramEndpoint struct {

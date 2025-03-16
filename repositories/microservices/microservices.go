@@ -3,7 +3,7 @@ package microservices
 import (
 	"context"
 	authsvc "github.com/oceaninov/naeco-promo-auth/service/interface"
-	"gitlab.com/nbdgocean6/nobita-promo-program/dial"
+	"github.com/oceaninov/naeco-promo-program/dial"
 	whitelistsvc "github.com/oceaninov/naeco-promo-whitelist/service/interface"
 	"google.golang.org/grpc"
 )
