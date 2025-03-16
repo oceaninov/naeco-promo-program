@@ -12,8 +12,8 @@ import (
 	"time"
 )
 
-func (s service) DeleteProgram(ctx context.Context, req *pb.DeleteProgramReq) (res *pb.ProgramRes, err error) {
-	const funcName = `DeleteProgram`
+func (s service) GetProgramByTopicID(ctx context.Context, req *pb.GetProgramReq) (res *pb.Programs, err error) {
+	const funcName = `GetProgramByTopicID`
 	_, span := s.tracer.StartSpan(ctx, funcName)
 	defer span.End()
 
@@ -23,24 +23,24 @@ func (s service) DeleteProgram(ctx context.Context, req *pb.DeleteProgramReq) (r
 
 	level.Info(gvars.Log).Log(lgr.LogInfo, fmt.Sprintf("request of %s function", funcName), lgr.LogData, fmt.Sprintf("%+v", req))
 
-	var response pb.ProgramRes
-	isSuccess, err := s.repo.ReadWriter.DeleteProgram(ctx, req)
+	res, err = s.repo.ReadWriter.ReadProgramByTopicID(ctx, req.TopicId)
 	if err != nil {
 		level.Error(gvars.Log).Log(lgr.LogErr, err.Error())
-		return nil, er.Ebl(codes.NotFound, "failed to delete data not existed", err)
+		return res, er.Ebl(codes.AlreadyExists, "failed to get data not found", err)
 	}
 
-	if !isSuccess {
-		level.Error(gvars.Log).Log(lgr.LogErr, "is not success")
-		return nil, er.Ebl(codes.NotFound, "failed to delete data not existed", err)
+	for i, program := range res.Programs {
+		programChannels, err := s.repo.ReadWriter.ReadProgramChannelByProgramID(ctx, program.Id)
+		if err != nil {
+			level.Error(gvars.Log).Log(lgr.LogErr, err.Error())
+			return res, er.Ebl(codes.AlreadyExists, "failed to get data not found", err)
+		}
+		res.Programs[i].ProgramChannels = append(res.Programs[i].ProgramChannels, programChannels...)
 	}
-
-	response.Success = true
-	response.Messages = "program has been deleted"
 
 	level.Info(gvars.Log).Log(lgr.LogInfo, fmt.Sprintf("downer of %s function execution start %d", funcName, time.Since(execTime)))
 
-	level.Info(gvars.Log).Log(lgr.LogInfo, fmt.Sprintf("response of %s function", funcName), lgr.LogData, fmt.Sprintf("%+v", &response))
+	level.Info(gvars.Log).Log(lgr.LogInfo, fmt.Sprintf("response of %s function", funcName), lgr.LogData, fmt.Sprintf("%+v", res))
 
-	return &response, nil
+	return res, nil
 }

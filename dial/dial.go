@@ -2,10 +2,10 @@ package dial
 
 import (
 	"context"
-	authsvc "gitlab.com/nbdgocean6/nobita-promo-auth/service/interface"
-	clientauth "gitlab.com/nbdgocean6/nobita-promo-auth/transports"
-	whitelistsvc "gitlab.com/nbdgocean6/nobita-promo-whitelist/service/interface"
-	clientwhitelist "gitlab.com/nbdgocean6/nobita-promo-whitelist/transports"
+	authsvc "github.com/oceaninov/naeco-promo-auth/service/interface"
+	clientauth "github.com/oceaninov/naeco-promo-auth/transports"
+	whitelistsvc "github.com/oceaninov/naeco-promo-whitelist/service/interface"
+	clientwhitelist "github.com/oceaninov/naeco-promo-whitelist/transports"
 	"go.opencensus.io/plugin/ocgrpc"
 	"go.opencensus.io/stats/view"
 	grpcgoogle "google.golang.org/grpc"

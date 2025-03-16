@@ -3,7 +3,7 @@ package service
 import (
 	_repointerface "gitlab.com/nbdgocean6/nobita-promo-program/repositories"
 	_interface "gitlab.com/nbdgocean6/nobita-promo-program/service/interface"
-	"gitlab.com/nbdgocean6/nobita-util/vlt"
+	"github.com/oceaninov/naeco-promo-util/vlt"
 	"go.opencensus.io/trace"
 )
 

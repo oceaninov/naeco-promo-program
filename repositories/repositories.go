@@ -2,19 +2,24 @@ package repositories
 
 import (
 	"context"
-	clockwerksvc "github.com/nightsilvertech/clockwerk/service/interface"
+	clockwerk "github.com/nightsilvertech/clockwerk/client"
+	"gitlab.com/nbdgocean6/nobita-promo-program/repositories/api"
 	_interface "gitlab.com/nbdgocean6/nobita-promo-program/repositories/interface"
 	"gitlab.com/nbdgocean6/nobita-promo-program/repositories/microservices"
+	"gitlab.com/nbdgocean6/nobita-promo-program/repositories/redis"
 	"gitlab.com/nbdgocean6/nobita-promo-program/repositories/scheduler"
 	"gitlab.com/nbdgocean6/nobita-promo-program/repositories/sql"
-	"gitlab.com/nbdgocean6/nobita-util/dbc"
+	"github.com/oceaninov/naeco-promo-util/dbc"
+	"github.com/oceaninov/naeco-promo-util/vlt"
 	"go.opencensus.io/trace"
 )
 
 type Repository struct {
 	ReadWriter   _interface.ReadWrite
+	API          _interface.Api
 	Microservice microservices.Microservices
-	Scheduler    clockwerksvc.Clockwerk
+	Scheduler    clockwerk.ClockwerkClient
+	Cache        _interface.Cache
 }
 
 type RepoConf struct {
@@ -23,7 +28,7 @@ type RepoConf struct {
 	SchedulerConf    scheduler.Config
 }
 
-func NewRepositories(ctx context.Context, rc RepoConf, tracer trace.Tracer) (*Repository, error) {
+func NewRepositories(ctx context.Context, rc RepoConf, tracer trace.Tracer, vault vlt.VLT) (*Repository, error) {
 	readWriter, err := sql.NewSQL(rc.SQL, tracer)
 	if err != nil {
 		return nil, err
@@ -32,10 +37,12 @@ func NewRepositories(ctx context.Context, rc RepoConf, tracer trace.Tracer) (*Re
 	if err != nil {
 		return nil, err
 	}
-	schedulers, err := scheduler.NewScheduler(rc.SchedulerConf)
+	schedulers, err := scheduler.NewSchedulerV2(rc.SchedulerConf, vault)
 	return &Repository{
 		ReadWriter:   readWriter,
 		Microservice: *microsvc,
 		Scheduler:    schedulers,
+		API:          api.NewAPI(),
+		Cache:        redis.NewRedis(),
 	}, nil
 }

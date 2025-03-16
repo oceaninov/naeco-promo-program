@@ -14,9 +14,19 @@ http:
       get: /v1/program/{topic_id}
     - selector: api.v1.ProgramService.GetProgramDetail
       get: /v1/program-detail/{id}
-    - selector: api.v1.ProgramService.ProgramStatusUpdate
-      post: /v1/program/status-update
-      body: "*"
+    - selector: api.v1.ProgramService.GetProgram
+      get: /v1/program
     - selector: api.v1.ProgramService.ProgramChangeStatus
       put: /v1/program/change-status/{id}/{status}
       body: "*"
+    - selector: api.v1.ProgramService.ChangeStatusProgram
+      put: /v1/program/status-change/{id}/{status}
+      body: "*"
+    - selector: api.v1.ProgramService.AddProgramBlacklistsBulk
+      post: /v1/program/blacklists/{program_id}
+      body: "*"
+    - selector: api.v1.ProgramService.DeleteProgramBlacklistsBulk
+      put: /v1/program/blacklists/{program_id}
+      body: "*"
+    - selector: api.v1.ProgramService.GetProgramBlacklists
+      get: /v1/program/blacklists/{program_id}

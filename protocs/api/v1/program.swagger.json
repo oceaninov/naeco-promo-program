@@ -20,14 +20,11 @@
     "protobufAny": {
       "type": "object",
       "properties": {
-        "typeUrl": {
+        "@type": {
           "type": "string"
-        },
-        "value": {
-          "type": "string",
-          "format": "byte"
         }
-      }
+      },
+      "additionalProperties": {}
     },
     "rpcStatus": {
       "type": "object",
@@ -43,6 +40,39 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1Blacklist": {
+      "type": "object",
+      "properties": {
+        "programId": {
+          "type": "string"
+        },
+        "blacklistProgramId": {
+          "type": "string"
+        },
+        "program": {
+          "$ref": "#/definitions/v1Program"
+        }
+      }
+    },
+    "v1BlacklistId": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "v1Blacklists": {
+      "type": "object",
+      "properties": {
+        "blacklists": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Blacklist"
           }
         }
       }
@@ -136,6 +166,68 @@
         "refreshProgramQuotaDaily": {
           "type": "string",
           "format": "int64"
+        },
+        "onBoardingDateStart": {
+          "type": "string",
+          "format": "int64"
+        },
+        "onBoardingDateTo": {
+          "type": "string",
+          "format": "int64"
+        },
+        "rangeTrxAmountMinimum": {
+          "type": "string",
+          "format": "int64"
+        },
+        "rangeTrxAmountMaximum": {
+          "type": "string",
+          "format": "int64"
+        },
+        "deprecated": {
+          "type": "boolean"
+        },
+        "historyGroupId": {
+          "type": "string"
+        },
+        "programChannels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1ProgramChannel"
+          }
+        }
+      }
+    },
+    "v1ProgramChannel": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "int64"
+        },
+        "createdBy": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "int64"
+        },
+        "updatedBy": {
+          "type": "string"
+        },
+        "programChannelId": {
+          "type": "string"
         }
       }
     },
@@ -147,16 +239,8 @@
         },
         "messages": {
           "type": "string"
-        }
-      }
-    },
-    "v1ProgramStatusUpdateRes": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "type": "string"
         },
-        "message": {
+        "newProgramId": {
           "type": "string"
         }
       }
@@ -169,6 +253,17 @@
           "items": {
             "$ref": "#/definitions/v1Program"
           }
+        }
+      }
+    },
+    "v1Response": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "messages": {
+          "type": "string"
         }
       }
     }

@@ -24,8 +24,12 @@ type ProgramServiceClient interface {
 	DeleteProgram(ctx context.Context, in *DeleteProgramReq, opts ...grpc.CallOption) (*ProgramRes, error)
 	GetProgramByTopicID(ctx context.Context, in *GetProgramReq, opts ...grpc.CallOption) (*Programs, error)
 	GetProgramDetail(ctx context.Context, in *GetProgramDetailReq, opts ...grpc.CallOption) (*Program, error)
-	ProgramStatusUpdate(ctx context.Context, in *ProgramStatusUpdateRes, opts ...grpc.CallOption) (*ProgramStatusUpdateRes, error)
 	ProgramChangeStatus(ctx context.Context, in *ProgramStatus, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	GetProgram(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Programs, error)
+	ChangeStatusProgram(ctx context.Context, in *ProgramStatus, opts ...grpc.CallOption) (*Response, error)
+	AddProgramBlacklistsBulk(ctx context.Context, in *Blacklisting, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DeleteProgramBlacklistsBulk(ctx context.Context, in *Blacklisting, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	GetProgramBlacklists(ctx context.Context, in *GetBlacklistReq, opts ...grpc.CallOption) (*Blacklists, error)
 }
 
 type programServiceClient struct {
@@ -81,18 +85,54 @@ func (c *programServiceClient) GetProgramDetail(ctx context.Context, in *GetProg
 	return out, nil
 }
 
-func (c *programServiceClient) ProgramStatusUpdate(ctx context.Context, in *ProgramStatusUpdateRes, opts ...grpc.CallOption) (*ProgramStatusUpdateRes, error) {
-	out := new(ProgramStatusUpdateRes)
-	err := c.cc.Invoke(ctx, "/api.v1.ProgramService/ProgramStatusUpdate", in, out, opts...)
+func (c *programServiceClient) ProgramChangeStatus(ctx context.Context, in *ProgramStatus, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/api.v1.ProgramService/ProgramChangeStatus", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *programServiceClient) ProgramChangeStatus(ctx context.Context, in *ProgramStatus, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *programServiceClient) GetProgram(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Programs, error) {
+	out := new(Programs)
+	err := c.cc.Invoke(ctx, "/api.v1.ProgramService/GetProgram", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *programServiceClient) ChangeStatusProgram(ctx context.Context, in *ProgramStatus, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/api.v1.ProgramService/ChangeStatusProgram", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *programServiceClient) AddProgramBlacklistsBulk(ctx context.Context, in *Blacklisting, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/api.v1.ProgramService/ProgramChangeStatus", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.v1.ProgramService/AddProgramBlacklistsBulk", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *programServiceClient) DeleteProgramBlacklistsBulk(ctx context.Context, in *Blacklisting, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/api.v1.ProgramService/DeleteProgramBlacklistsBulk", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *programServiceClient) GetProgramBlacklists(ctx context.Context, in *GetBlacklistReq, opts ...grpc.CallOption) (*Blacklists, error) {
+	out := new(Blacklists)
+	err := c.cc.Invoke(ctx, "/api.v1.ProgramService/GetProgramBlacklists", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -108,8 +148,12 @@ type ProgramServiceServer interface {
 	DeleteProgram(context.Context, *DeleteProgramReq) (*ProgramRes, error)
 	GetProgramByTopicID(context.Context, *GetProgramReq) (*Programs, error)
 	GetProgramDetail(context.Context, *GetProgramDetailReq) (*Program, error)
-	ProgramStatusUpdate(context.Context, *ProgramStatusUpdateRes) (*ProgramStatusUpdateRes, error)
 	ProgramChangeStatus(context.Context, *ProgramStatus) (*emptypb.Empty, error)
+	GetProgram(context.Context, *emptypb.Empty) (*Programs, error)
+	ChangeStatusProgram(context.Context, *ProgramStatus) (*Response, error)
+	AddProgramBlacklistsBulk(context.Context, *Blacklisting) (*emptypb.Empty, error)
+	DeleteProgramBlacklistsBulk(context.Context, *Blacklisting) (*emptypb.Empty, error)
+	GetProgramBlacklists(context.Context, *GetBlacklistReq) (*Blacklists, error)
 }
 
 // UnimplementedProgramServiceServer should be embedded to have forward compatible implementations.
@@ -131,11 +175,23 @@ func (UnimplementedProgramServiceServer) GetProgramByTopicID(context.Context, *G
 func (UnimplementedProgramServiceServer) GetProgramDetail(context.Context, *GetProgramDetailReq) (*Program, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProgramDetail not implemented")
 }
-func (UnimplementedProgramServiceServer) ProgramStatusUpdate(context.Context, *ProgramStatusUpdateRes) (*ProgramStatusUpdateRes, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProgramStatusUpdate not implemented")
-}
 func (UnimplementedProgramServiceServer) ProgramChangeStatus(context.Context, *ProgramStatus) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProgramChangeStatus not implemented")
+}
+func (UnimplementedProgramServiceServer) GetProgram(context.Context, *emptypb.Empty) (*Programs, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProgram not implemented")
+}
+func (UnimplementedProgramServiceServer) ChangeStatusProgram(context.Context, *ProgramStatus) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangeStatusProgram not implemented")
+}
+func (UnimplementedProgramServiceServer) AddProgramBlacklistsBulk(context.Context, *Blacklisting) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddProgramBlacklistsBulk not implemented")
+}
+func (UnimplementedProgramServiceServer) DeleteProgramBlacklistsBulk(context.Context, *Blacklisting) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteProgramBlacklistsBulk not implemented")
+}
+func (UnimplementedProgramServiceServer) GetProgramBlacklists(context.Context, *GetBlacklistReq) (*Blacklists, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProgramBlacklists not implemented")
 }
 
 // UnsafeProgramServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -239,24 +295,6 @@ func _ProgramService_GetProgramDetail_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProgramService_ProgramStatusUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProgramStatusUpdateRes)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProgramServiceServer).ProgramStatusUpdate(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/api.v1.ProgramService/ProgramStatusUpdate",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProgramServiceServer).ProgramStatusUpdate(ctx, req.(*ProgramStatusUpdateRes))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _ProgramService_ProgramChangeStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ProgramStatus)
 	if err := dec(in); err != nil {
@@ -271,6 +309,96 @@ func _ProgramService_ProgramChangeStatus_Handler(srv interface{}, ctx context.Co
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProgramServiceServer).ProgramChangeStatus(ctx, req.(*ProgramStatus))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProgramService_GetProgram_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProgramServiceServer).GetProgram(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.v1.ProgramService/GetProgram",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProgramServiceServer).GetProgram(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProgramService_ChangeStatusProgram_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProgramStatus)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProgramServiceServer).ChangeStatusProgram(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.v1.ProgramService/ChangeStatusProgram",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProgramServiceServer).ChangeStatusProgram(ctx, req.(*ProgramStatus))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProgramService_AddProgramBlacklistsBulk_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Blacklisting)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProgramServiceServer).AddProgramBlacklistsBulk(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.v1.ProgramService/AddProgramBlacklistsBulk",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProgramServiceServer).AddProgramBlacklistsBulk(ctx, req.(*Blacklisting))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProgramService_DeleteProgramBlacklistsBulk_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Blacklisting)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProgramServiceServer).DeleteProgramBlacklistsBulk(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.v1.ProgramService/DeleteProgramBlacklistsBulk",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProgramServiceServer).DeleteProgramBlacklistsBulk(ctx, req.(*Blacklisting))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProgramService_GetProgramBlacklists_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetBlacklistReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProgramServiceServer).GetProgramBlacklists(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.v1.ProgramService/GetProgramBlacklists",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProgramServiceServer).GetProgramBlacklists(ctx, req.(*GetBlacklistReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -303,12 +431,28 @@ var ProgramService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ProgramService_GetProgramDetail_Handler,
 		},
 		{
-			MethodName: "ProgramStatusUpdate",
-			Handler:    _ProgramService_ProgramStatusUpdate_Handler,
-		},
-		{
 			MethodName: "ProgramChangeStatus",
 			Handler:    _ProgramService_ProgramChangeStatus_Handler,
+		},
+		{
+			MethodName: "GetProgram",
+			Handler:    _ProgramService_GetProgram_Handler,
+		},
+		{
+			MethodName: "ChangeStatusProgram",
+			Handler:    _ProgramService_ChangeStatusProgram_Handler,
+		},
+		{
+			MethodName: "AddProgramBlacklistsBulk",
+			Handler:    _ProgramService_AddProgramBlacklistsBulk_Handler,
+		},
+		{
+			MethodName: "DeleteProgramBlacklistsBulk",
+			Handler:    _ProgramService_DeleteProgramBlacklistsBulk_Handler,
+		},
+		{
+			MethodName: "GetProgramBlacklists",
+			Handler:    _ProgramService_GetProgramBlacklists_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

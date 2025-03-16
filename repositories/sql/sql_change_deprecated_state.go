@@ -7,8 +7,8 @@ import (
 	"time"
 )
 
-func (r *readWrite) ChangeProgramStatus(ctx context.Context, programID string, status int32) error {
-	const funcName = `ChangeProgramStatus`
+func (r *readWrite) ChangeDeprecatedState(ctx context.Context, programID string, state bool) error {
+	const funcName = `ChangeDeprecatedState`
 	_, span := r.tracer.StartSpan(ctx, funcName)
 	defer span.End()
 
@@ -19,7 +19,7 @@ func (r *readWrite) ChangeProgramStatus(ctx context.Context, programID string, s
 	defer dbtrx.Trx(tx, err)
 	const query = `
 		UPDATE programs SET  
-            status = ?,
+            deprecated = ?,
             updated_at = ?
 		WHERE id = ?
 	`
@@ -29,7 +29,7 @@ func (r *readWrite) ChangeProgramStatus(ctx context.Context, programID string, s
 	}
 	result, err := stmt.ExecContext(
 		ctx,
-		status,     // status
+		state,      // deprecated
 		time.Now(), // updated_at
 		programID,  // id
 	)

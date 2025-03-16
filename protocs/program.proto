@@ -28,11 +28,19 @@ message AddProgramReq {
   string merchant_csv_url = 22;
   string customer_csv_url = 23;
   int64 refresh_program_quota_daily = 24;
+  int64 on_boarding_date_start = 25;
+  int64 on_boarding_date_to = 26;
+  int64 range_trx_amount_minimum = 27;
+  int64 range_trx_amount_maximum = 28;
+  bool deprecated = 29;
+  string history_group_id = 30;
+  repeated ProgramChannel program_channels = 31;
 }
 
 message ProgramRes {
   bool success = 1;
   string messages = 2;
+  string new_program_id = 3;
 }
 
 message EditProgramReq {
@@ -58,6 +66,13 @@ message EditProgramReq {
   string merchant_csv_url = 20;
   string customer_csv_url = 21;
   int64 refresh_program_quota_daily = 22;
+  int64 on_boarding_date_start = 23;
+  int64 on_boarding_date_to = 24;
+  int64 range_trx_amount_minimum = 25;
+  int64 range_trx_amount_maximum = 26;
+  bool deprecated = 27;
+  string history_group_id = 28;
+  repeated ProgramChannel program_channels = 29;
 }
 
 message DeleteProgramReq {
@@ -98,20 +113,62 @@ message Program {
   string customer_csv_url = 23;
   string topic_title = 24;
   int64 refresh_program_quota_daily = 25;
+  int64 on_boarding_date_start = 26;
+  int64 on_boarding_date_to = 27;
+  int64 range_trx_amount_minimum = 28;
+  int64 range_trx_amount_maximum = 29;
+  bool deprecated = 30;
+  string history_group_id = 31;
+  repeated ProgramChannel program_channels = 32;
+}
+
+message ProgramChannel {
+  string id = 1;
+  string key = 2;
+  string status = 3;
+  string title = 4;
+  int64 created_at = 5;
+  string created_by = 6;
+  int64 updated_at = 7;
+  string updated_by = 8;
+  string program_channel_id = 9;
 }
 
 message Programs {
   repeated Program programs = 1;
 }
 
-message ProgramStatusUpdateRes {
-  string status = 1;
-  string message = 2;
-}
-
 message ProgramStatus {
   string id = 1;
   int32 status = 2;
+}
+
+message Response {
+  bool success = 1;
+  string messages = 2;
+}
+
+message BlacklistId {
+  string id = 1;
+}
+
+message Blacklisting {
+  string program_id = 1;
+  repeated BlacklistId blacklists_id = 2;
+}
+
+message GetBlacklistReq {
+  string program_id = 1;
+}
+
+message Blacklist {
+  string program_id = 1;
+  string blacklist_program_id = 2;
+  Program program = 3;
+}
+
+message Blacklists {
+  repeated Blacklist blacklists = 1;
 }
 
 service ProgramService {
@@ -120,6 +177,10 @@ service ProgramService {
   rpc DeleteProgram(DeleteProgramReq) returns (ProgramRes);
   rpc GetProgramByTopicID(GetProgramReq) returns (Programs);
   rpc GetProgramDetail(GetProgramDetailReq) returns (Program);
-  rpc ProgramStatusUpdate(ProgramStatusUpdateRes) returns (ProgramStatusUpdateRes);
   rpc ProgramChangeStatus(ProgramStatus) returns (google.protobuf.Empty);
+  rpc GetProgram(google.protobuf.Empty) returns (Programs);
+  rpc ChangeStatusProgram(ProgramStatus) returns (Response);
+  rpc AddProgramBlacklistsBulk(Blacklisting) returns (google.protobuf.Empty);
+  rpc DeleteProgramBlacklistsBulk(Blacklisting) returns (google.protobuf.Empty);
+  rpc GetProgramBlacklists(GetBlacklistReq) returns (Blacklists);
 }

@@ -6,7 +6,7 @@ import (
 
 	uuid "github.com/satori/go.uuid"
 	pb "gitlab.com/nbdgocean6/nobita-promo-program/protocs/api/v1"
-	"gitlab.com/nbdgocean6/nobita-util/dbtrx"
+	"github.com/oceaninov/naeco-promo-util/dbtrx"
 )
 
 func (r *readWrite) WriteProgram(ctx context.Context, req *pb.AddProgramReq) (string, bool, error) {
@@ -21,8 +21,41 @@ func (r *readWrite) WriteProgram(ctx context.Context, req *pb.AddProgramReq) (st
 	defer dbtrx.Trx(tx, err)
 
 	id := uuid.NewV4().String()
-	const query = `INSERT INTO programs(id, channel_id, topic_id, description, memo_url, start_at, end_at, allocated_amount, available_allocated_amount, eligibility_check, status,source_of_fund, discount_calculation, allocated_quota, available_allocated_quota, discount_amount, discount_percent, merchant_csv_url, customer_csv_url, created_at, created_by, updated_at, updated_by, refresh_program_quota_daily) 
-					VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
+	const query = `
+		INSERT INTO 
+		    programs(
+				id, 
+				channel_id, 
+				topic_id, 
+				description, 
+				memo_url, 
+				start_at, 
+				end_at, 
+				allocated_amount, 
+				available_allocated_amount, 
+				eligibility_check, 
+				status,
+				source_of_fund, 
+				discount_calculation, 
+				allocated_quota, 
+				available_allocated_quota,
+				discount_amount,
+				discount_percent,
+				merchant_csv_url,
+				customer_csv_url, 
+				created_at, 
+				created_by, 
+				updated_at,
+				updated_by,
+				refresh_program_quota_daily,
+				on_boarding_date_start, 
+				on_boarding_date_to, 
+				range_trx_amount_minimum, 
+				range_trx_amount_maximum,
+		    	history_group_id
+			) 
+		VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+	`
 	stmt, err := tx.Prepare(query)
 	if err != nil {
 		return "", false, err
@@ -53,6 +86,11 @@ func (r *readWrite) WriteProgram(ctx context.Context, req *pb.AddProgramReq) (st
 		time.Now(),                   // updated_at
 		req.CreatedBy,                // updated_by
 		req.RefreshProgramQuotaDaily, // refresh_program_quota_daily
+		req.OnBoardingDateStart,      // on_boarding_date_start
+		req.OnBoardingDateTo,         // on_boarding_date_to
+		req.RangeTrxAmountMinimum,    // range_trx_amount_minimum
+		req.RangeTrxAmountMaximum,    // range_trx_amount_maximum
+		req.HistoryGroupId,           // history_group_id
 	)
 	if err != nil {
 		return "", false, err

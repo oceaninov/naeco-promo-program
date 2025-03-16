@@ -10,13 +10,17 @@ import (
 )
 
 type grpcProgramServer struct {
-	addProgram          grpctransport.Handler
-	editProgram         grpctransport.Handler
-	deleteProgram       grpctransport.Handler
-	getProgramByTopicID grpctransport.Handler
-	getProgramDetail    grpctransport.Handler
-	programStatusUpdate grpctransport.Handler
-	programChangeStatus grpctransport.Handler
+	addProgram                  grpctransport.Handler
+	editProgram                 grpctransport.Handler
+	deleteProgram               grpctransport.Handler
+	getProgramByTopicID         grpctransport.Handler
+	getProgramDetail            grpctransport.Handler
+	programChangeStatus         grpctransport.Handler
+	getProgram                  grpctransport.Handler
+	changeStatusProgram         grpctransport.Handler
+	addProgramBlacklistsBulk    grpctransport.Handler
+	deleteProgramBlacklistsBulk grpctransport.Handler
+	getProgramBlacklists        grpctransport.Handler
 }
 
 func (g *grpcProgramServer) AddProgram(ctx context.Context, req *pb.AddProgramReq) (*pb.ProgramRes, error) {
@@ -59,12 +63,12 @@ func (g *grpcProgramServer) GetProgramDetail(ctx context.Context, req *pb.GetPro
 	return res.(*pb.Program), nil
 }
 
-func (g *grpcProgramServer) ProgramStatusUpdate(ctx context.Context, req *pb.ProgramStatusUpdateRes) (*pb.ProgramStatusUpdateRes, error) {
-	_, res, err := g.programStatusUpdate.ServeGRPC(ctx, req)
+func (g *grpcProgramServer) GetProgram(ctx context.Context, req *emptypb.Empty) (*pb.Programs, error) {
+	_, res, err := g.getProgram.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
 	}
-	return res.(*pb.ProgramStatusUpdateRes), nil
+	return res.(*pb.Programs), nil
 }
 
 func (g *grpcProgramServer) ProgramChangeStatus(ctx context.Context, req *pb.ProgramStatus) (*emptypb.Empty, error) {
@@ -73,6 +77,38 @@ func (g *grpcProgramServer) ProgramChangeStatus(ctx context.Context, req *pb.Pro
 		return nil, err
 	}
 	return res.(*emptypb.Empty), nil
+}
+
+func (g *grpcProgramServer) ChangeStatusProgram(ctx context.Context, req *pb.ProgramStatus) (*pb.Response, error) {
+	_, res, err := g.changeStatusProgram.ServeGRPC(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return res.(*pb.Response), nil
+}
+
+func (g *grpcProgramServer) AddProgramBlacklistsBulk(ctx context.Context, req *pb.Blacklisting) (*emptypb.Empty, error) {
+	_, res, err := g.addProgramBlacklistsBulk.ServeGRPC(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return res.(*emptypb.Empty), nil
+}
+
+func (g *grpcProgramServer) DeleteProgramBlacklistsBulk(ctx context.Context, req *pb.Blacklisting) (*emptypb.Empty, error) {
+	_, res, err := g.deleteProgramBlacklistsBulk.ServeGRPC(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return res.(*emptypb.Empty), nil
+}
+
+func (g *grpcProgramServer) GetProgramBlacklists(ctx context.Context, req *pb.GetBlacklistReq) (*pb.Blacklists, error) {
+	_, res, err := g.getProgramBlacklists.ServeGRPC(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return res.(*pb.Blacklists), nil
 }
 
 func NewProgramServer(endpoints ep.ProgramEndpoint) pb.ProgramServiceServer {
@@ -110,16 +146,40 @@ func NewProgramServer(endpoints ep.ProgramEndpoint) pb.ProgramServiceServer {
 			encodeResponse,
 			options...,
 		),
-		programStatusUpdate: grpctransport.NewServer(
-			endpoints.ProgramStatusUpdateEndpoint,
-			decodeRequest,
-			encodeResponse,
-			options...,
-		),
 		programChangeStatus: grpctransport.NewServer(
 			endpoints.ProgramChangeStatusEndpoint,
 			decodeRequest,
 			encodeEmptyPbResponse,
+			options...,
+		),
+		getProgram: grpctransport.NewServer(
+			endpoints.GetProgramEndpoint,
+			decodeRequest,
+			encodeResponse,
+			options...,
+		),
+		changeStatusProgram: grpctransport.NewServer(
+			endpoints.ChangeStatusProgramEndpoint,
+			decodeRequest,
+			encodeResponse,
+			options...,
+		),
+		addProgramBlacklistsBulk: grpctransport.NewServer(
+			endpoints.AddProgramBlacklistsBulkEndpoint,
+			decodeRequest,
+			encodeEmptyPbResponse,
+			options...,
+		),
+		deleteProgramBlacklistsBulk: grpctransport.NewServer(
+			endpoints.DeleteProgramBlacklistsBulkEndpoint,
+			decodeRequest,
+			encodeEmptyPbResponse,
+			options...,
+		),
+		getProgramBlacklists: grpctransport.NewServer(
+			endpoints.GetProgramBlacklistsEndpoint,
+			decodeRequest,
+			encodeResponse,
 			options...,
 		),
 	}
@@ -127,6 +187,10 @@ func NewProgramServer(endpoints ep.ProgramEndpoint) pb.ProgramServiceServer {
 
 func decodeRequest(_ context.Context, request interface{}) (interface{}, error) {
 	return request, nil
+}
+
+func decodeEmptyPbRequest(_ context.Context, _ interface{}) (interface{}, error) {
+	return &emptypb.Empty{}, nil
 }
 
 func encodeResponse(_ context.Context, response interface{}) (interface{}, error) {

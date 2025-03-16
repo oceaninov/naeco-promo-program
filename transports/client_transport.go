@@ -96,22 +96,6 @@ func NewGRPProgramClient(conn *grpc.ClientConn) _interface.Service {
 		).Endpoint()
 	}
 
-	var programStatusUpdateEp endpoint.Endpoint
-	{
-		const (
-			rpcName   = `api.v1.ProgramService`
-			rpcMethod = `ProgramStatusUpdate`
-		)
-
-		programStatusUpdateEp = grpctransport.NewClient(
-			conn,
-			rpcName,
-			rpcMethod,
-			encodeRequest,
-			decodeResponse,
-			pb.Program{},
-		).Endpoint()
-	}
 
 	return &ep.ProgramEndpoint{
 		AddProgramEndpoint:          addProgramEp,
@@ -119,6 +103,5 @@ func NewGRPProgramClient(conn *grpc.ClientConn) _interface.Service {
 		DeleteProgramEndpoint:       deleteProgramEp,
 		GetProgramByTopicIDEndpoint: getProgramByTopicsIDEp,
 		GetProgramDetailEndpoint:    getProgramDetailEp,
-		ProgramStatusUpdateEndpoint:    programStatusUpdateEp,
 	}
 }

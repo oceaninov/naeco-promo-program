@@ -1,25 +1,22 @@
 package scheduler
 
 import (
-	"fmt"
-	clockwerksvc "github.com/nightsilvertech/clockwerk/service/interface"
-	clockwerktrpt "github.com/nightsilvertech/clockwerk/transports"
-	grpcgoogle "google.golang.org/grpc"
+	clockwerk "github.com/nightsilvertech/clockwerk/client"
+	"github.com/oceaninov/naeco-promo-util/vlt"
+	"strings"
 )
 
 type Config struct {
 	SchedulerHostAndPort string
 }
 
-func NewScheduler(config Config) (clockwerksvc.Clockwerk, error) {
-	dialOptions := []grpcgoogle.DialOption{
-		grpcgoogle.WithInsecure(),
-	}
-	connectionString := fmt.Sprintf(config.SchedulerHostAndPort)
-	conn, err := grpcgoogle.Dial(connectionString, dialOptions...)
+func NewSchedulerV2(config Config, vault vlt.VLT) (clockwerk.ClockwerkClient, error) {
+	username := vault.Get("/scheduler_basic_auth:username")
+	password := vault.Get("/scheduler_basic_auth:password")
+	configs := strings.Split(config.SchedulerHostAndPort, ":")
+	client, err := clockwerk.NewClockwerk(configs[0], configs[1], username, password)
 	if err != nil {
 		return nil, err
 	}
-	clockwerk := clockwerktrpt.ClockwerkClient(conn)
-	return clockwerk, nil
+	return client, nil
 }

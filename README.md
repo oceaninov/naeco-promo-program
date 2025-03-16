@@ -13,7 +13,7 @@
 
 # About
 
-### Authentication Service
+### Program Service
 
 This service used for program management like create edit delete and get programs 
 
@@ -22,7 +22,7 @@ This service used for program management like create edit delete and get program
 - programming language : golang https://golang.org/
 - virtualization : docker https://www.docker.com/why-docker
 - standard lib : go-kit https://github.com/go-kit/kit.git
-- circuit breaker : hystrix https://github.com/Netflix/Hystrix.git
+- circuit breaker : hystrix https://github.com/afex/hystrix-go.git
 - proxy gen : grpc-gateway https://github.com/grpc-ecosystem/grpc-gateway.git
 - secret management : vault : https://www.vaultproject.io/
 - tracer engine : zipkin : https://zipkin.io/
@@ -30,4 +30,4 @@ This service used for program management like create edit delete and get program
 - unit test : testify : https://github.com/stretchr/testify
 - web token : jwt : https://jwt.io/
 
-###### Authentication Service
+###### Program Service

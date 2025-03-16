@@ -8,18 +8,17 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-func makeProgramChangeStatusEndpoint(usecase _interface.Service) endpoint.Endpoint {
+func makeGetProgramEndpoint(usecase _interface.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
-		res, err := usecase.ProgramChangeStatus(ctx, request.(*pb.ProgramStatus))
+		res, err := usecase.GetProgram(ctx, request.(*emptypb.Empty))
 		return res, err
 	}
 }
 
-func (e ProgramEndpoint) ProgramChangeStatus(ctx context.Context, req *pb.ProgramStatus) (*emptypb.Empty, error) {
-	res, err := e.ProgramChangeStatusEndpoint(ctx, req)
+func (e ProgramEndpoint) GetProgram(ctx context.Context, req *emptypb.Empty) (*pb.Programs, error) {
+	res, err := e.GetProgramEndpoint(ctx, req)
 	if err != nil {
-		return &emptypb.Empty{}, err
+		return &pb.Programs{}, err
 	}
-	return res.(*emptypb.Empty), nil
+	return res.(*pb.Programs), nil
 }
-

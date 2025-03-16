@@ -10,11 +10,11 @@ import (
 	"net"
 	"net/http"
 
-	"gitlab.com/nbdgocean6/nobita-util/hdr"
+	"github.com/oceaninov/naeco-promo-util/hdr"
 
 	"gitlab.com/nbdgocean6/nobita-promo-program/gvars"
 	"gitlab.com/nbdgocean6/nobita-promo-program/repositories/microservices"
-	"gitlab.com/nbdgocean6/nobita-util/lgr"
+	"github.com/oceaninov/naeco-promo-util/lgr"
 
 	oczipkin "contrib.go.opencensus.io/exporter/zipkin"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -27,14 +27,13 @@ import (
 	"gitlab.com/nbdgocean6/nobita-promo-program/repositories"
 	"gitlab.com/nbdgocean6/nobita-promo-program/service"
 	"gitlab.com/nbdgocean6/nobita-promo-program/transports"
-	"gitlab.com/nbdgocean6/nobita-util/cb"
-	"gitlab.com/nbdgocean6/nobita-util/dbc"
-	"gitlab.com/nbdgocean6/nobita-util/vlt"
+	"github.com/oceaninov/naeco-promo-util/cb"
+	"github.com/oceaninov/naeco-promo-util/dbc"
+	"github.com/oceaninov/naeco-promo-util/vlt"
 
 	"go.opencensus.io/trace"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
-	"github.com/joho/godotenv"
 )
 
 // ServeGRPC serving GRPC server and will be merged using MergeServer function
@@ -95,7 +94,17 @@ func CreateCredentialBasicAuthForSystem(username, password string) {
 	gvars.SyncMapHashStorage.Store(key, string(hashByte))
 }
 
+func ServerAddress(host, port string) string {
+	return fmt.Sprintf("http://%s:%s", host, port)
+}
+
+func ServerGrpcAddress(host, port string) string {
+	return fmt.Sprintf("%s:%s", host, port)
+}
+
 func main() {
+	const serverHost = `gcp-nb-sbox01`
+
 	gvars.Log = lgr.Create(constants.ServiceName)
 
 	level.Info(gvars.Log).Log(lgr.LogInfo, "service started")
@@ -103,18 +112,16 @@ func main() {
 	ctx := context.Background()
 	defer ctx.Done()
 
-	vaultUrl, vaultPath, vaultToken := GetVaultConfig()
-
-	vault, err := vlt.NewVLT(vaultToken, vaultUrl, vaultPath)
+	vault, err := vlt.NewVLT("myroot", ServerAddress(serverHost, "8300"), "/secret")
 	if err != nil {
 		panic(err)
 	}
 
-	//reporter := httpreporter.NewReporter(vault.Get("/tracer_conf:url"))
-	//localEndpoint, _ := zipkin.NewEndpoint(constants.ServiceName, "http://gcp-nb-sbox01:0")
-	//exporter := oczipkin.NewExporter(reporter, localEndpoint)
-	//trace.ApplyConfig(trace.Config{DefaultSampler: trace.AlwaysSample()})
-	//trace.RegisterExporter(exporter)
+	reporter := httpreporter.NewReporter(vault.Get("/tracer_conf:url"))
+	localEndpoint, _ := zipkin.NewEndpoint(constants.ServiceName, ServerAddress(serverHost, "0"))
+	exporter := oczipkin.NewExporter(reporter, localEndpoint)
+	trace.ApplyConfig(trace.Config{DefaultSampler: trace.AlwaysSample()})
+	trace.RegisterExporter(exporter)
 	trcr := trace.DefaultTracer
 
 	var repoConf repositories.RepoConf
@@ -127,11 +134,11 @@ func main() {
 			Name:     vault.Get("/sql_database:db"),
 		}
 		repoConf.MicroserviceConf = microservices.Config{
-			AuthHostAndPort:      "gcp-nb-sbox01:50010",
-			WhitelistHostAndPort: "gcp-nb-sbox01:50011",
+			AuthHostAndPort:      ServerGrpcAddress(serverHost, "50010"),
+			WhitelistHostAndPort: ServerGrpcAddress(serverHost, "50011"),
 		}
 		repoConf.SchedulerConf = scheduler.Config{
-			SchedulerHostAndPort: "gcp-nb-sbox01:1929",
+			SchedulerHostAndPort: ServerGrpcAddress(serverHost, "1929"),
 		}
 	}
 
@@ -140,7 +147,7 @@ func main() {
 		vault.Get("/basic_auth_system:password"),
 	)
 
-	programRepo, err := repositories.NewRepositories(ctx, repoConf, trcr)
+	programRepo, err := repositories.NewRepositories(ctx, repoConf, trcr, vault)
 	if err != nil {
 		panic(err)
 	}
@@ -159,16 +166,4 @@ func main() {
 
 	server := transports.NewProgramServer(authEp)
 	MergeServer(server, nil)
-}
-
-func GetVaultConfig() (vaultUrl string, path string, token string) {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-	vaultUrl = os.Getenv("VAULT_URL")
-	path = os.Getenv("VAULT_PATH")
-	token = os.Getenv("VAULT_TOKEN")
-
-	return
 }

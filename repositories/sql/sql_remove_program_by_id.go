@@ -4,7 +4,7 @@ import (
 	"context"
 
 	pb "gitlab.com/nbdgocean6/nobita-promo-program/protocs/api/v1"
-	"gitlab.com/nbdgocean6/nobita-util/dbtrx"
+	"github.com/oceaninov/naeco-promo-util/dbtrx"
 )
 
 func (r *readWrite) DeleteProgram(ctx context.Context, req *pb.DeleteProgramReq) (bool, error) {

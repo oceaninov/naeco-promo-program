@@ -5,15 +5,16 @@ import (
 	"github.com/go-kit/kit/log/level"
 	"gitlab.com/nbdgocean6/nobita-promo-program/gvars"
 	pb "gitlab.com/nbdgocean6/nobita-promo-program/protocs/api/v1"
-	"gitlab.com/nbdgocean6/nobita-util/er"
-	"gitlab.com/nbdgocean6/nobita-util/lgr"
+	"github.com/oceaninov/naeco-promo-util/er"
+	"github.com/oceaninov/naeco-promo-util/lgr"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"time"
 )
 
-func (s service) GetProgramByTopicID(ctx context.Context, req *pb.GetProgramReq) (res *pb.Programs, err error) {
-	const funcName = `GetProgramByTopicID`
+func (s service) GetProgram(ctx context.Context, req *emptypb.Empty) (res *pb.Programs, err error) {
+	const funcName = `GetProgram`
 	_, span := s.tracer.StartSpan(ctx, funcName)
 	defer span.End()
 
@@ -23,10 +24,10 @@ func (s service) GetProgramByTopicID(ctx context.Context, req *pb.GetProgramReq)
 
 	level.Info(gvars.Log).Log(lgr.LogInfo, fmt.Sprintf("request of %s function", funcName), lgr.LogData, fmt.Sprintf("%+v", req))
 
-	res, err = s.repo.ReadWriter.ReadProgramByTopicID(ctx, req.TopicId)
+	res, err = s.repo.ReadWriter.ReadAllProgram(ctx)
 	if err != nil {
 		level.Error(gvars.Log).Log(lgr.LogErr, err.Error())
-		return res, er.Ebl(codes.AlreadyExists,"failed to get data not found",err)
+		return res, er.Ebl(codes.AlreadyExists, "failed to get data not found", err)
 	}
 
 	level.Info(gvars.Log).Log(lgr.LogInfo, fmt.Sprintf("downer of %s function execution start %d", funcName, time.Since(execTime)))

@@ -8,18 +8,17 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-func makeProgramChangeStatusEndpoint(usecase _interface.Service) endpoint.Endpoint {
+func makeAddProgramBlacklistsBulkEndpoint(usecase _interface.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
-		res, err := usecase.ProgramChangeStatus(ctx, request.(*pb.ProgramStatus))
+		res, err := usecase.AddProgramBlacklistsBulk(ctx, request.(*pb.Blacklisting))
 		return res, err
 	}
 }
 
-func (e ProgramEndpoint) ProgramChangeStatus(ctx context.Context, req *pb.ProgramStatus) (*emptypb.Empty, error) {
-	res, err := e.ProgramChangeStatusEndpoint(ctx, req)
+func (e ProgramEndpoint) AddProgramBlacklistsBulk(ctx context.Context, req *pb.Blacklisting) (*emptypb.Empty, error) {
+	res, err := e.AddProgramBlacklistsBulkEndpoint(ctx, req)
 	if err != nil {
 		return &emptypb.Empty{}, err
 	}
 	return res.(*emptypb.Empty), nil
 }
-

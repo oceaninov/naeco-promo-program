@@ -1,19 +1,20 @@
 package service
 
 import (
+	"context"
 	"fmt"
 	"github.com/go-kit/kit/log/level"
 	"gitlab.com/nbdgocean6/nobita-promo-program/gvars"
 	pb "gitlab.com/nbdgocean6/nobita-promo-program/protocs/api/v1"
 	"github.com/oceaninov/naeco-promo-util/er"
 	"github.com/oceaninov/naeco-promo-util/lgr"
-	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"time"
 )
 
-func (s service) DeleteProgram(ctx context.Context, req *pb.DeleteProgramReq) (res *pb.ProgramRes, err error) {
-	const funcName = `DeleteProgram`
+func (s service) AddProgramBlacklistsBulk(ctx context.Context, req *pb.Blacklisting) (res *emptypb.Empty, err error) {
+	const funcName = `AddProgramBlacklistsBulk`
 	_, span := s.tracer.StartSpan(ctx, funcName)
 	defer span.End()
 
@@ -23,24 +24,15 @@ func (s service) DeleteProgram(ctx context.Context, req *pb.DeleteProgramReq) (r
 
 	level.Info(gvars.Log).Log(lgr.LogInfo, fmt.Sprintf("request of %s function", funcName), lgr.LogData, fmt.Sprintf("%+v", req))
 
-	var response pb.ProgramRes
-	isSuccess, err := s.repo.ReadWriter.DeleteProgram(ctx, req)
+	err = s.repo.ReadWriter.WriteProgramBlacklistBulk(ctx, req)
 	if err != nil {
 		level.Error(gvars.Log).Log(lgr.LogErr, err.Error())
-		return nil, er.Ebl(codes.NotFound, "failed to delete data not existed", err)
+		return nil, er.Ebl(codes.Internal, "failed to write bulk program blacklist", err)
 	}
-
-	if !isSuccess {
-		level.Error(gvars.Log).Log(lgr.LogErr, "is not success")
-		return nil, er.Ebl(codes.NotFound, "failed to delete data not existed", err)
-	}
-
-	response.Success = true
-	response.Messages = "program has been deleted"
 
 	level.Info(gvars.Log).Log(lgr.LogInfo, fmt.Sprintf("downer of %s function execution start %d", funcName, time.Since(execTime)))
 
-	level.Info(gvars.Log).Log(lgr.LogInfo, fmt.Sprintf("response of %s function", funcName), lgr.LogData, fmt.Sprintf("%+v", &response))
+	level.Info(gvars.Log).Log(lgr.LogInfo, fmt.Sprintf("response of %s function", funcName), lgr.LogData, fmt.Sprintf("%+v", res))
 
-	return &response, nil
+	return nil, nil
 }

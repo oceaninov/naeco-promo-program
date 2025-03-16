@@ -2,7 +2,7 @@ package sql
 
 import (
 	"context"
-	"gitlab.com/nbdgocean6/nobita-util/dbtrx"
+	"github.com/oceaninov/naeco-promo-util/dbtrx"
 )
 
 func (r *readWrite) UpdateAllProgramByTodayDateToActive(ctx context.Context) (bool, error) {

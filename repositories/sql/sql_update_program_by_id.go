@@ -5,7 +5,7 @@ import (
 	"time"
 
 	pb "gitlab.com/nbdgocean6/nobita-promo-program/protocs/api/v1"
-	"gitlab.com/nbdgocean6/nobita-util/dbtrx"
+	"github.com/oceaninov/naeco-promo-util/dbtrx"
 )
 
 func (r *readWrite) UpdateProgram(ctx context.Context, req *pb.EditProgramReq) (bool, error) {
@@ -18,7 +18,8 @@ func (r *readWrite) UpdateProgram(ctx context.Context, req *pb.EditProgramReq) (
 		return false, err
 	}
 	defer dbtrx.Trx(tx, err)
-	const query = `UPDATE programs SET 
+	const query = `
+		UPDATE programs SET 
 			channel_id = ?,
             topic_id = ?,
             description = ?, 
@@ -39,8 +40,13 @@ func (r *readWrite) UpdateProgram(ctx context.Context, req *pb.EditProgramReq) (
         	customer_csv_url = ?,
             updated_at = ?, 
             updated_by = ?,
-            refresh_program_quota_daily = ?
-		WHERE id = ?`
+            refresh_program_quota_daily = ?,
+            on_boarding_date_start = ?,
+            on_boarding_date_to = ?,
+            range_trx_amount_minimum = ?,
+            range_trx_amount_maximum = ?
+		WHERE id = ?
+	`
 	stmt, err := tx.Prepare(query)
 	if err != nil {
 		return false, err
@@ -68,6 +74,10 @@ func (r *readWrite) UpdateProgram(ctx context.Context, req *pb.EditProgramReq) (
 		time.Now(),                   // updated_at
 		req.UpdatedBy,                // updated_by
 		req.RefreshProgramQuotaDaily, // refresh_program_quota_daily
+		req.OnBoardingDateStart,      // on_boarding_date_start
+		req.OnBoardingDateTo,         // on_boarding_date_to
+		req.RangeTrxAmountMinimum,    // range_trx_amount_minimum
+		req.RangeTrxAmountMaximum,    // range_trx_amount_maximum
 		req.Id,                       // id
 	)
 	if err != nil {
